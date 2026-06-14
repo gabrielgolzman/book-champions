@@ -1,0 +1,156 @@
+.book-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    transform: translateY(-8px) scale(1.015);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.7),
+      0 0 0 1px var(--gold-dim),
+      0 0 24px rgba(201, 168, 76, 0.08);
+
+    .book-card__cover {
+      transform: scale(1.05);
+    }
+  }
+
+  // ── Cover ──────────────────────────────────────────────
+  &__cover-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  &__cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  &__cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+        transparent 55%,
+        rgba(255, 255, 255, 0.15) 80%,
+        rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
+  }
+
+  // ── Body ───────────────────────────────────────────────
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 14px 12px;
+    flex: 1;
+    background: var(--surface);
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  &__author {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.88rem;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__publisher {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // ── Stars ──────────────────────────────────────────────
+  &__stars {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  &__star {
+    display: flex;
+    align-items: center;
+
+    &--filled {
+      color: var(--gold);
+    }
+
+    &--empty {
+      color: var(--gold-dim);
+    }
+  }
+
+  // ── Footer ─────────────────────────────────────────────
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  &__pages {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  // ── Badge ──────────────────────────────────────────────
+  &__badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+
+    &--available {
+      background: var(--available-bg);
+      color: var(--available-fg);
+    }
+
+    &--reserved {
+      background: var(--reserved-bg);
+      color: var(--reserved-fg);
+    }
+  }
+}

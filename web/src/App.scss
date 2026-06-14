@@ -1,0 +1,80 @@
+.app {
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+// ── Header ─────────────────────────────────────────────────
+.app-header {
+  position: relative;
+  padding: 64px 48px 48px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -80px;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &__eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  &__subtitle {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    color: var(--text-secondary);
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  &__meta {
+    margin-top: 24px;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  &__divider {
+    display: inline-block;
+    margin: 0 8px;
+    opacity: 0.4;
+  }
+}
+
+// ── Grid ───────────────────────────────────────────────────
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+  padding: 48px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+}

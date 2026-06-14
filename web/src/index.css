@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Nunito+Sans:wght@300;400;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:               #faf7f3;
+  --surface:          #ffffff;
+  --surface-elevated: #f5f1eb;
+  --border:           #e4ddd4;
+  --gold:             #a07820;
+  --gold-dim:         #c9a84c;
+  --text-primary:     #1a1714;
+  --text-secondary:   #5a5248;
+  --text-muted:       #9a9088;
+  --available-bg:     #d6f0e3;
+  --available-fg:     #1a6640;
+  --reserved-bg:      #fde8e8;
+  --reserved-fg:      #9b2c2c;
+  --font-display:     'Cormorant Garamond', Georgia, serif;
+  --font-body:        'Nunito Sans', sans-serif;
+}
+
+html, body, #root {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
