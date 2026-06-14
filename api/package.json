@@ -1,0 +1,21 @@
+{
+  "name": "book-champions-api",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "app.ts",
+  "scripts": {
+    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\""
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.3",
+    "tsc-watch": "^7.2.0",
+    "typescript": "^6.0.3"
+  }
+}
