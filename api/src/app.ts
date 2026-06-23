@@ -1,6 +1,7 @@
 import express from "express";
 import { BOOKS_MOCK } from "./book/book.mock.js";
 import { Book } from "./book/book.js";
+import { sanitizeBookInput } from "./validations.js";
 
 const app = express();
 
@@ -8,11 +9,11 @@ const PORT = 3000;
 
 app.use(express.json());
 
-app.get("/books", (req, res) => {
+app.get("/api/books", (req, res) => {
     res.json(BOOKS_MOCK);
 })
 
-app.get("/books/:id", (req, res) => {
+app.get("/api/books/:id", (req, res) => {
     const bookIndex = BOOKS_MOCK.findIndex((book) =>
         book.id === req.params?.id);
 
@@ -22,7 +23,7 @@ app.get("/books/:id", (req, res) => {
     return res.json(BOOKS_MOCK[bookIndex]);
 })
 
-app.post("/books", (req, res) => {
+app.post("/api/books", (req, res) => {
     const { title, authors, publisher, pageCount, rating, isAvailable, cover } = req.body;
 
     const book = new Book(
@@ -41,7 +42,7 @@ app.post("/books", (req, res) => {
 
 });
 
-app.put("/books/:id", (req, res) => {
+app.put("/api/books/:id", (req, res) => {
     const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === req.params.id);
 
     if (bookIndex < 0)
@@ -55,7 +56,20 @@ app.put("/books/:id", (req, res) => {
     res.json(BOOKS_MOCK[bookIndex]);
 });
 
-app.delete("/books/:id", (req, res) => {
+app.patch('/api/books/:id', sanitizeBookInput, (req, res) => {
+    const bookIdx = BOOKS_MOCK.findIndex((book) => book.id === req.params.id)
+
+    if (bookIdx < 0) {
+        return res.status(404).send({ message: 'Book not found' })
+    }
+
+    Object.assign(BOOKS_MOCK[bookIdx], req.body.sanitizedBookInput)
+
+    return res.status(200).send({ message: 'Book updated successfully', data: BOOKS_MOCK[bookIdx] })
+})
+
+
+app.delete("/api/books/:id", (req, res) => {
     const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === req.params.id);
 
     if (bookIndex < 0)
