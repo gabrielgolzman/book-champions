@@ -1,6 +1,6 @@
 import express from "express";
-import { BOOKS_MOCK } from "./book.mock.js";
-import { Book } from "./book.js";
+import { BOOKS_MOCK } from "./book/book.mock.js";
+import { Book } from "./book/book.js";
 
 const app = express();
 
