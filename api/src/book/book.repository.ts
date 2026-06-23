@@ -18,6 +18,23 @@ export class BookRepository implements Repository<Book> {
     }
 
     public update(item: Book): Book | undefined {
+        const bookIndex = BOOKS_MOCK.findIndex(book => book.id === item.id);
+
+        if (bookIndex >= 0) {
+            BOOKS_MOCK[bookIndex] = { ...BOOKS_MOCK[bookIndex], ...item }
+        }
+
+        return BOOKS_MOCK[bookIndex];
+    }
+
+    public delete(item: { id: string; }): { id: string } | undefined {
+        const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === item.id);
+
+        if (bookIndex >= 0) {
+            BOOKS_MOCK.splice(bookIndex, 1);
+        }
+
+        return { id: item.id }
 
     }
 
