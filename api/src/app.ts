@@ -2,25 +2,27 @@ import express from "express";
 import { BOOKS_MOCK } from "./book/book.mock.js";
 import { Book } from "./book/book.js";
 import { sanitizeBookInput } from "./validations.js";
+import { BookRepository } from "./book/book.repository.js";
 
 const app = express();
 
 const PORT = 3000;
 
+const repository = new BookRepository();
+
 app.use(express.json());
 
 app.get("/api/books", (req, res) => {
-    res.json(BOOKS_MOCK);
+    res.json(repository.findAll());
 })
 
 app.get("/api/books/:id", (req, res) => {
-    const bookIndex = BOOKS_MOCK.findIndex((book) =>
-        book.id === req.params?.id);
+    const book = repository.findOne({ id: req.params.id })
 
-    if (bookIndex < 0)
+    if (!book)
         return res.status(404).send({ message: "Book not found" });
 
-    return res.json(BOOKS_MOCK[bookIndex]);
+    return res.json(book);
 })
 
 app.post("/api/books", (req, res) => {
