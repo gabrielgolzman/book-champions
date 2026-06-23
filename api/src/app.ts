@@ -1,5 +1,4 @@
 import express from "express";
-import { BOOKS_MOCK } from "./book/book.mock.js";
 import { Book } from "./book/book.js";
 import { sanitizeBookInput } from "./validations.js";
 import { BookRepository } from "./book/book.repository.js";
@@ -38,48 +37,38 @@ app.post("/api/books", sanitizeBookInput, (req, res) => {
         input.isAvailable,
     )
 
-    BOOKS_MOCK.push(book);
+    repository.add(book);
 
-    return res.json(book);
+    return res.status(201).json({ message: "Book added", data: book });
 
 });
 
 app.put("/api/books/:id", sanitizeBookInput, (req, res) => {
-    const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === req.params.id);
+    const book = repository.update({ id: req.params.id, ...req.body.sanitizedBookInput });
 
-    if (bookIndex < 0)
+    if (!book)
         return res.status(404).send({ message: "Book not found" });
 
-    BOOKS_MOCK[bookIndex] = {
-        ...BOOKS_MOCK[bookIndex],
-        ...req.body.sanitizedBookInput
-    };
-
-    res.json(BOOKS_MOCK[bookIndex]);
+    res.json({ message: "Book updated successfully", data: book });
 });
 
 app.patch('/api/books/:id', sanitizeBookInput, (req, res) => {
-    const bookIdx = BOOKS_MOCK.findIndex((book) => book.id === req.params.id)
+    const book = repository.update({ id: req.params.id, ...req.body.sanitizedBookInput });
 
-    if (bookIdx < 0) {
-        return res.status(404).send({ message: 'Book not found' })
-    }
+    if (!book)
+        return res.status(404).send({ message: "Book not found" });
 
-    Object.assign(BOOKS_MOCK[bookIdx], req.body.sanitizedBookInput)
-
-    return res.status(200).send({ message: 'Book updated successfully', data: BOOKS_MOCK[bookIdx] })
+    res.json({ message: "Book updated successfully", data: book });
 })
 
 
 app.delete("/api/books/:id", (req, res) => {
-    const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === req.params.id);
+    const result = repository.delete({ id: req.params.id })
 
-    if (bookIndex < 0)
-        return res.status(404).send({ message: "Book not found" });
+    if (!result)
+        return res.status(500).json({ message: "There was an internal error deleting the book" })
 
-    BOOKS_MOCK.splice(bookIndex, 1);
-
-    return res.json({ message: `Book with id: ${req.params.id} successfully deleted` })
+    return res.json({ message: `Book with id: ${result.id} successfully deleted` })
 })
 
 
