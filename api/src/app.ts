@@ -23,17 +23,17 @@ app.get("/api/books/:id", (req, res) => {
     return res.json(BOOKS_MOCK[bookIndex]);
 })
 
-app.post("/api/books", (req, res) => {
-    const { title, authors, publisher, pageCount, rating, isAvailable, cover } = req.body;
+app.post("/api/books", sanitizeBookInput, (req, res) => {
+    const input = req.body.sanitizedBookInput;
 
     const book = new Book(
-        title,
-        authors,
-        publisher,
-        pageCount,
-        rating,
-        cover,
-        isAvailable,
+        input.title,
+        input.authors,
+        input.publisher,
+        input.pageCount,
+        input.rating,
+        input.cover,
+        input.isAvailable,
     )
 
     BOOKS_MOCK.push(book);
@@ -42,7 +42,7 @@ app.post("/api/books", (req, res) => {
 
 });
 
-app.put("/api/books/:id", (req, res) => {
+app.put("/api/books/:id", sanitizeBookInput, (req, res) => {
     const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === req.params.id);
 
     if (bookIndex < 0)
@@ -50,7 +50,7 @@ app.put("/api/books/:id", (req, res) => {
 
     BOOKS_MOCK[bookIndex] = {
         ...BOOKS_MOCK[bookIndex],
-        ...req.body
+        ...req.body.sanitizedBookInput
     };
 
     res.json(BOOKS_MOCK[bookIndex]);
