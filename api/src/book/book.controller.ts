@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import { BookRepository } from "./book.repository.js";
-import { Book } from "./book.js";
+import { BookService } from "./book.service.js";
 
-const repository = new BookRepository();
+const service = new BookService(new BookRepository());
 
 export const findAll = (req: Request, res: Response) => {
-    res.json(repository.findAll());
+    res.json(service.findAll());
 }
 
 export const findOne = (req: Request, res: Response) => {
-    const id = req.params.id as string; // cast
-    const book = repository.findOne({ id })
+    const id = req.params.id as string;
+    const book = service.findOne(id);
 
     if (!book)
         return res.status(404).send({ message: "Book not found" });
@@ -19,25 +19,14 @@ export const findOne = (req: Request, res: Response) => {
 }
 
 export const create = (req: Request, res: Response) => {
-    const input = req.body.sanitizedBookInput;
-
-    const book = new Book(
-        input.title,
-        input.authors,
-        input.publisher,
-        input.pageCount,
-        input.rating,
-        input.cover,
-        input.isAvailable,
-    )
-
-    repository.add(book);
+    const book = service.create(req.body.sanitizedBookInput);
 
     return res.status(201).json({ message: "Book added", data: book });
 }
 
 export const update = (req: Request, res: Response) => {
-    const book = repository.update({ id: req.params.id, ...req.body.sanitizedBookInput });
+    const id = req.params.id as string;
+    const book = service.update(id, req.body.sanitizedBookInput);
 
     if (!book)
         return res.status(404).send({ message: "Book not found" });
@@ -47,7 +36,7 @@ export const update = (req: Request, res: Response) => {
 
 export const remove = (req: Request, res: Response) => {
     const id = req.params.id as string;
-    const result = repository.delete({ id })
+    const result = service.remove(id);
 
     if (!result)
         return res.status(500).json({ message: "There was an internal error deleting the book" })

@@ -1,5 +1,5 @@
 import { Repository } from "../shared/base.repository.js";
-import { Book } from "./book.js";
+import { Book } from "./book.entity.js";
 import { BOOKS_MOCK } from "./book.mock.js";
 
 export class BookRepository implements Repository<Book> {
