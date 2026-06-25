@@ -1,4 +1,4 @@
-import { Book } from "./book.js";
+import { Book } from "./book.entity.js";
 
 export const BOOKS_MOCK: Book[] = [
     new Book("The Lord of the Rings", ["J.R.R. Tolkien"], "Allen & Unwin", 1178, 4.9, "https://covers.example.com/lord-of-the-rings.jpg", true, "a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
