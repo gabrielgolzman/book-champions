@@ -1,9 +1,17 @@
-import StarIcon from '../ui/icons/starIcon/StarIcon'
+import { useState } from 'react'
+import StarIcon from '../shared/icons/starIcon/StarIcon'
+import Button from '../shared/button/Button'
 import './BookItem.scss'
 
 const MAX_RATING = 5
 
-const BookItem = ({ title, author, publisher, rating, pageCount, cover, isAvailable }) => {
+const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAvailable, onDelete }) => {
+    const [available, setAvailable] = useState(isAvailable);
+
+    const handleChangeAvailability = () => {
+        setAvailable((prevAvailable) => !prevAvailable)
+    }
+
     const stars = Array.from({ length: MAX_RATING }, (_, i) => i < rating)
 
     return (
@@ -31,11 +39,13 @@ const BookItem = ({ title, author, publisher, rating, pageCount, cover, isAvaila
                         </span>
                     ))}
                 </div>
+                <Button variant='danger' onClick={() => onDelete(id)}>Eliminar libro</Button>
+                <Button onClick={handleChangeAvailability}>Cambiar disponibilidad</Button>
 
                 <div className="book-card__footer">
                     <span className="book-card__pages">{pageCount} pág.</span>
-                    <span className={`book-card__badge ${isAvailable ? 'book-card__badge--available' : 'book-card__badge--reserved'}`}>
-                        {isAvailable ? 'Disponible' : 'Reservado'}
+                    <span className={`book-card__badge ${available ? 'book-card__badge--available' : 'book-card__badge--reserved'}`}>
+                        {available ? 'Disponible' : 'Reservado'}
                     </span>
                 </div>
             </div>
