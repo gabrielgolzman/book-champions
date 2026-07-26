@@ -4,15 +4,15 @@ import { Book } from "./book.entity.js";
 export class BookService {
     constructor(private repo: Repository<Book>) { }
 
-    findAll(): Book[] | undefined {
+    findAll(): Promise<Book[] | undefined> {
         return this.repo.findAll();
     }
 
-    findOne(id: string): Book | undefined {
+    findOne(id: string): Promise<Book | undefined> {
         return this.repo.findOne({ id });
     }
 
-    create(input: Omit<Book, "id">): Book {
+    create(input: Omit<Book, "id">): Promise<Book | undefined> {
         const book = new Book(
             input.title,
             input.authors,
@@ -22,15 +22,15 @@ export class BookService {
             input.cover,
             input.isAvailable,
         );
-        this.repo.add(book);
-        return book;
+
+        return this.repo.add(book);
     }
 
-    update(id: string, input: Partial<Book>): Book | undefined {
+    update(id: string, input: Partial<Book>): Promise<Book | undefined> {
         return this.repo.update({ id, ...input } as Book);
     }
 
-    remove(id: string): { id: string } | undefined {
+    remove(id: string): Promise<{ id: string } | undefined> {
         return this.repo.delete({ id });
     }
 }

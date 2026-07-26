@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: DSW-UTN-Mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - dsw-utn-mongo-data:/data/db
+    networks:
+      - dsw-utn-net
+
+  postgres:
+    image: postgres:latest
+    container_name: DSW-UTN-Postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: dsw_123!
+    ports:
+      - "5432:5432"
+    volumes:
+      - dsw-utn-postgres-data:/var/lib/postgresql/data
+    networks:
+      - dsw-utn-net
+
+networks:
+  dsw-utn-net:
+    name: dsw-utn-net
+
+volumes:
+  dsw-utn-mongo-data:
+  dsw-utn-postgres-data:
