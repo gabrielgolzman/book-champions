@@ -2,20 +2,21 @@ import { useEffect, useState } from 'react';
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 
-import { BOOKS } from './data/books'
 import BookItem from './components/bookItem/BookItem'
 import BookForm from './components/bookForm/BookForm';
 import Button from './components/shared/button/Button';
 import './App.scss'
+import { successToast } from './shared/notifications';
 
 const App = () => {
   const [showForm, setShowForm] = useState(false);
-  const [books, setBooks] = useState(BOOKS);
+  const [books, setBooks] = useState([]);
+  const [bookSelected, setSelectedBook] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3000/api/books")
       .then(res => res.json())
-      .then(data => setBooks([...data]))
+      .then(data => setBooks([...data.map(d => ({ ...d, author: d.authors[0] }))]))
       .catch(err => console.log(err));
   }, [])
 
@@ -25,21 +26,52 @@ const App = () => {
 
   const handleHideForm = () => {
     setShowForm(false)
+    setSelectedBook(null)
+
   }
 
   const handleAddBook = (book) => {
+    const bookToCreate = { ...book, authors: [book.author] }
     fetch("http://localhost:3000/api/books", {
       headers: {
         "Content-type": "application/json"
       },
       method: "POST",
-      body: JSON.stringify(book)
+      body: JSON.stringify(bookToCreate)
     })
       .then(res => res.json())
       .then(({ data }) => {
         setBooks(prevBookList => [data, ...prevBookList])
+        successToast(`¡Libro ${data.title} agregado correctamente!`)
       })
       .catch(err => console.log(err))
+  }
+
+  const handleEditBook = (bookToEdit) => {
+    setShowForm(true)
+    setSelectedBook(bookToEdit)
+  }
+
+  const handleUpdateBook = (book) => {
+    const bookToEdit = { ...book, authors: [book.author] }
+
+    fetch(`http://localhost:3000/api/books/${book._id}`, {
+      headers: {
+        "Content-type": "application/json",
+      },
+      method: "PUT",
+      body: JSON.stringify(bookToEdit)
+    })
+      .then(() => {
+        setBooks((prevBooks) => prevBooks.map((book) => {
+          if (book._id === bookToEdit._id)
+            return bookToEdit
+
+          return book
+        }))
+        successToast(`¡Libro ${book.title} actualizado correctamente!`)
+
+      })
   }
 
   const handleDeleteBook = (bookId) => {
@@ -50,12 +82,14 @@ const App = () => {
       method: "DELETE",
     })
       .then(() => {
-        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId))
+        setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId))
+        successToast(`¡Libro eliminado correctamente!`)
+
       })
   }
 
   const booksMapped = books.map(book => (
-    <BookItem key={book.id} {...book} onDelete={handleDeleteBook} />
+    <BookItem key={book._id}  {...book} id={book._id} onEdit={handleEditBook} onDelete={handleDeleteBook} />
   ));
 
   return (
@@ -75,7 +109,7 @@ const App = () => {
       </div>
 
       <main className="book-grid">
-        {showForm && <BookForm onClose={handleHideForm} onAdd={handleAddBook} />}
+        {showForm && <BookForm selectedBook={bookSelected} onClose={handleHideForm} onAdd={handleAddBook} onEdit={handleUpdateBook} />}
         {booksMapped.length > 0 ? booksMapped : <h2>No se encontraron libros</h2>}
       </main>
     </div>

@@ -1,15 +1,13 @@
-import { useState } from 'react'
 import StarIcon from '../shared/icons/starIcon/StarIcon'
 import Button from '../shared/button/Button'
 import './BookItem.scss'
 
 const MAX_RATING = 5
 
-const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAvailable, onDelete }) => {
-    const [available, setAvailable] = useState(isAvailable);
+const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAvailable, onEdit, onDelete }) => {
 
-    const handleChangeAvailability = () => {
-        setAvailable((prevAvailable) => !prevAvailable)
+    const handleEditBook = () => {
+        onEdit({ _id: id, title, author, publisher, rating, pageCount, cover, isAvailable })
     }
 
     const stars = Array.from({ length: MAX_RATING }, (_, i) => i < rating)
@@ -40,12 +38,12 @@ const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAv
                     ))}
                 </div>
                 <Button variant='danger' onClick={() => onDelete(id)}>Eliminar libro</Button>
-                <Button onClick={handleChangeAvailability}>Cambiar disponibilidad</Button>
+                <Button onClick={handleEditBook}>Editar libro</Button>
 
                 <div className="book-card__footer">
                     <span className="book-card__pages">{pageCount} pág.</span>
-                    <span className={`book-card__badge ${available ? 'book-card__badge--available' : 'book-card__badge--reserved'}`}>
-                        {available ? 'Disponible' : 'Reservado'}
+                    <span className={`book-card__badge ${isAvailable ? 'book-card__badge--available' : 'book-card__badge--reserved'}`}>
+                        {isAvailable ? 'Disponible' : 'Reservado'}
                     </span>
                 </div>
             </div>

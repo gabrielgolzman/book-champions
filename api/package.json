@@ -10,10 +10,12 @@
     "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\""
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "mongodb": "^7.5.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.3",
     "tsc-watch": "^7.2.0",
