@@ -41,7 +41,7 @@ const App = () => {
     })
       .then(res => res.json())
       .then(({ data }) => {
-        setBooks(prevBookList => [data, ...prevBookList])
+        setBooks(prevBookList => [{ ...data, author: data.authors[0] }, ...prevBookList])
         successToast(`¡Libro ${data.title} agregado correctamente!`)
       })
       .catch(err => console.log(err))
@@ -62,10 +62,11 @@ const App = () => {
       method: "PUT",
       body: JSON.stringify(bookToEdit)
     })
-      .then(() => {
+      .then(res => res.json())
+      .then(({ data }) => {
         setBooks((prevBooks) => prevBooks.map((book) => {
-          if (book._id === bookToEdit._id)
-            return bookToEdit
+          if (book._id === data._id)
+            return { ...data, author: data.authors[0] }
 
           return book
         }))
