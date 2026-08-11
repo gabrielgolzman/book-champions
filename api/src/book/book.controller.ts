@@ -4,13 +4,14 @@ import { BookService } from "./book.service.js";
 
 const service = new BookService(new BookRepository());
 
-export const findAll = (req: Request, res: Response) => {
-    res.json(service.findAll());
+export const findAll = async (req: Request, res: Response) => {
+    const books = await service.findAll();
+    res.json(books);
 }
 
-export const findOne = (req: Request, res: Response) => {
+export const findOne = async (req: Request, res: Response) => {
     const id = req.params.id as string;
-    const book = service.findOne(id);
+    const book = await service.findOne(id);
 
     if (!book)
         return res.status(404).send({ message: "Book not found" });
@@ -18,15 +19,15 @@ export const findOne = (req: Request, res: Response) => {
     return res.json(book);
 }
 
-export const create = (req: Request, res: Response) => {
-    const book = service.create(req.body.sanitizedBookInput);
+export const create = async (req: Request, res: Response) => {
+    const book = await service.create(req.body.sanitizedBookInput);
 
     return res.status(201).json({ message: "Book added", data: book });
 }
 
-export const update = (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response) => {
     const id = req.params.id as string;
-    const book = service.update(id, req.body.sanitizedBookInput);
+    const book = await service.update(id, req.body.sanitizedBookInput);
 
     if (!book)
         return res.status(404).send({ message: "Book not found" });
@@ -34,9 +35,9 @@ export const update = (req: Request, res: Response) => {
     res.json({ message: "Book updated successfully", data: book });
 }
 
-export const remove = (req: Request, res: Response) => {
+export const remove = async (req: Request, res: Response) => {
     const id = req.params.id as string;
-    const result = service.remove(id);
+    const result = await service.remove(id);
 
     if (!result)
         return res.status(500).json({ message: "There was an internal error deleting the book" })
