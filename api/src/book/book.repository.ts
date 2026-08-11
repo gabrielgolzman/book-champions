@@ -1,41 +1,36 @@
+import { ObjectId } from "mongodb";
 import { Repository } from "../shared/base.repository.js";
+import { db } from "../shared/db/conn.js";
 import { Book } from "./book.entity.js";
 import { BOOKS_MOCK } from "./book.mock.js";
 
+const books = db.collection<Book>('books');
+
 export class BookRepository implements Repository<Book> {
 
-    public findAll(): Book[] | undefined {
-        return BOOKS_MOCK;
+    public async findAll(): Promise<Book[] | undefined> {
+        return await books.find().toArray();
     }
 
-    public findOne(item: { id: string; }): Book | undefined {
-        return BOOKS_MOCK.find((book) => book.id === item.id);
+    public async findOne(item: { id: string; }): Promise<Book | undefined> {
+        const _id = new ObjectId(item.id);
+        return await books.findOne({ _id }) || undefined;
     }
 
-    public add(item: Book): Book | undefined {
-        BOOKS_MOCK.push(item);
+    public async add(item: Book): Promise<Book | undefined> {
+        item._id = (await books.insertOne(item)).insertedId
         return item;
     }
 
-    public update(item: Book): Book | undefined {
-        const bookIndex = BOOKS_MOCK.findIndex(book => book.id === item.id);
-
-        if (bookIndex >= 0) {
-            BOOKS_MOCK[bookIndex] = { ...BOOKS_MOCK[bookIndex], ...item }
-        }
-
-        return BOOKS_MOCK[bookIndex];
+    public async update(item: Book): Promise<Book | undefined> {
+        const { id, ...bookInput } = item;
+        const _id = new ObjectId(id)
+        return await books.findOneAndUpdate({ _id }, { $set: bookInput }, { returnDocument: 'after' }) || undefined;
     }
 
-    public delete(item: { id: string; }): { id: string } | undefined {
-        const bookIndex = BOOKS_MOCK.findIndex((book) => book.id === item.id);
-
-        if (bookIndex >= 0) {
-            BOOKS_MOCK.splice(bookIndex, 1);
-        }
-
-        return { id: item.id }
-
+    public async delete(item: { id: string; }): Promise<{ id: string } | undefined> {
+        const _id = new ObjectId(item.id);
+        return await books.findOneAndDelete({ _id }) || undefined;
     }
 
 }
