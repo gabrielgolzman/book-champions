@@ -3,19 +3,26 @@ import Button from '../shared/button/Button'
 import { formInitialState } from './BookForm.data';
 import './BookForm.scss'
 
-const BookForm = ({ onClose, onAdd }) => {
-    const [form, setForm] = useState(formInitialState);
+const BookForm = ({ selectedBook, onClose, onAdd, onEdit }) => {
+    const [form, setForm] = useState(selectedBook ?? formInitialState);
 
-
+    const handleClose = () => {
+        setForm(formInitialState)
+        onClose()
+    }
     const handleOverlayClick = (event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) {
+            handleClose()
+        }
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setForm(formInitialState);
-        onAdd(form);
-        onClose();
+        if (isEditing)
+            onEdit(form);
+        else
+            onAdd(form)
+        handleClose()
     };
 
     const handleInputChange = (event, attr) => {
@@ -33,6 +40,8 @@ const BookForm = ({ onClose, onAdd }) => {
                 [attr]: event.target.checked
             }))
     }
+
+    const isEditing = !!selectedBook
 
 
     return (
@@ -129,8 +138,8 @@ const BookForm = ({ onClose, onAdd }) => {
                 </div>
 
                 <div className="book-form__actions">
-                    <Button type="button" variant="secondary" size="md" onClick={onClose}>Cancelar</Button>
-                    <Button type="submit" variant="primary" size="md">Agregar libro</Button>
+                    <Button type="button" variant="secondary" size="md" onClick={handleClose}>Cancelar</Button>
+                    <Button type="submit" variant="primary" size="md">{isEditing ? "Editar" : "Agregar"} libro</Button>
                 </div>
             </form>
         </div>

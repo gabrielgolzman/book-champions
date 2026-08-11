@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { bookRouter } from "./book/book.routes.js";
 
 const app = express();
@@ -6,6 +7,11 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}))
 
 app.use("/api/books", bookRouter)
 
