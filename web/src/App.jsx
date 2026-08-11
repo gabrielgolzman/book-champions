@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
+
 import { BOOKS } from './data/books'
 import BookItem from './components/bookItem/BookItem'
 import BookForm from './components/bookForm/BookForm';
@@ -7,7 +10,14 @@ import './App.scss'
 
 const App = () => {
   const [showForm, setShowForm] = useState(false);
-  const [books, setBooks] = useState(BOOKS)
+  const [books, setBooks] = useState(BOOKS);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/api/books")
+      .then(res => res.json())
+      .then(data => setBooks([...data]))
+      .catch(err => console.log(err));
+  }, [])
 
   const handleShowForm = () => {
     setShowForm(true)
@@ -18,14 +28,30 @@ const App = () => {
   }
 
   const handleAddBook = (book) => {
-    setBooks((prevBooks) => {
-      const latestId = Math.max(...BOOKS.map(book => book.id));
-      return [{ ...book, id: latestId + 1 }, ...prevBooks]
+    fetch("http://localhost:3000/api/books", {
+      headers: {
+        "Content-type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(book)
     })
+      .then(res => res.json())
+      .then(({ data }) => {
+        setBooks(prevBookList => [data, ...prevBookList])
+      })
+      .catch(err => console.log(err))
   }
 
   const handleDeleteBook = (bookId) => {
-    setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId))
+    fetch(`http://localhost:3000/api/books/${bookId}`, {
+      headers: {
+        "Content-type": "application/json",
+      },
+      method: "DELETE",
+    })
+      .then(() => {
+        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId))
+      })
   }
 
   const booksMapped = books.map(book => (
@@ -34,6 +60,7 @@ const App = () => {
 
   return (
     <div className="app">
+      <ToastContainer />
       <header className="app-header">
         <p className="app-header__eyebrow">Tu biblioteca personal</p>
         <h1 className="app-header__title">Book Champions</h1>
