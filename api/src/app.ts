@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { bookRouter } from "./book/book.routes.js";
+import { authorRouter } from "./author/author.routes.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors({
 }))
 
 app.use("/api/books", bookRouter)
+app.use("/api/authors", authorRouter)
 
 app.use((_, res) => {
     return res.status(404).send({ message: "Resource not found" });
