@@ -58,10 +58,12 @@ export class BookRepository implements Repository<Book> {
                 [item.title, item.publisher, item.pageCount, item.rating, item.cover, item.isAvailable]
             )).rows[0];
 
+            console.log(book);
+
             for (const name of item.authors) {
                 const author = (await client.query(
                     `insert into authors (name) values ($1)
-                     on conflict (name) do nothing
+                     on conflict (name) do update set name = excluded.name
                      returning id`,
                     [name]
                 )).rows[0];
@@ -108,7 +110,7 @@ export class BookRepository implements Repository<Book> {
             for (const name of item.authors) {
                 const author = (await client.query(
                     `insert into authors (name) values ($1)
-                     on conflict (name) do nothing
+                     on conflict (name) do update set name = excluded.name
                      returning id`,
                     [name]
                 )).rows[0];
