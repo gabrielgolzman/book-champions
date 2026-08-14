@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-import crypto from "node:crypto"
 
 export class Book {
     constructor(
@@ -10,7 +8,6 @@ export class Book {
         public rating: number,
         public cover: string,
         public isAvailable: boolean,
-        public id = crypto.randomUUID(),
-        public _id?: ObjectId
+        public id?: string,
     ) { }
 }
