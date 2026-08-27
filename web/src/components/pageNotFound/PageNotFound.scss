@@ -1,0 +1,18 @@
+.page-not-found {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px;
+  text-align: center;
+
+  &__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--text-primary);
+    margin: 0;
+  }
+}

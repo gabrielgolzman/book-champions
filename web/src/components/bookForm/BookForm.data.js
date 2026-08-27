@@ -4,6 +4,6 @@ export const formInitialState = {
         publisher: "",
         rating: "",
         pageCount: "",
-        imageUrl: "",
+        cover: "",
         isAvailable: false,
     };

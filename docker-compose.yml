@@ -23,6 +23,20 @@ services:
     networks:
       - dsw-utn-net
 
+  mysql:
+    image: mysql:8.4
+    container_name: DSW-UTN-MySQL
+    restart: unless-stopped
+    command: --mysql-native-password=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dsw-utn-mysql-data:/var/lib/mysql
+    networks:
+      - dsw-utn-net
+
 networks:
   dsw-utn-net:
     name: dsw-utn-net
@@ -30,3 +44,4 @@ networks:
 volumes:
   dsw-utn-mongo-data:
   dsw-utn-postgres-data:
+  dsw-utn-mysql-data:

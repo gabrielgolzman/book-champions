@@ -1,12 +1,11 @@
 .book-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
-  cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -26,7 +25,7 @@
   // ── Cover ──────────────────────────────────────────────
   &__cover-wrap {
     position: relative;
-    width: 100%;
+    width: 240px;
     aspect-ratio: 2 / 3;
     overflow: hidden;
     flex-shrink: 0;
@@ -55,9 +54,16 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 14px 14px 12px;
+    padding: 14px 16px 12px;
     flex: 1;
+    min-width: 0;
     background: var(--surface);
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
   }
 
   &__title {

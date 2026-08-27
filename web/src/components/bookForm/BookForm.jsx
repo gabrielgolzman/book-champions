@@ -1,20 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import Button from '../shared/button/Button'
 import { formInitialState } from './BookForm.data';
+import { getBook } from './BookForm.server';
 import './BookForm.scss'
 
-const BookForm = ({ selectedBook, onClose, onAdd, onEdit }) => {
-    const [form, setForm] = useState(selectedBook ?? formInitialState);
+const BookForm = ({ onAdd, onEdit }) => {
+    const navigate = useNavigate()
+    const { id } = useParams()
+    const { state } = useLocation()
+    const isEditing = !!id
 
-    const handleClose = () => {
-        setForm(formInitialState)
-        onClose()
+    const [form, setForm] = useState(state ?? formInitialState);
+
+    useEffect(() => {
+        if (!isEditing || state) return
+
+        getBook(id, {
+            onSuccess: (book) => setForm({ ...book, author: book.authors?.[0] ?? '' }),
+            onError: (err) => console.log(err),
+        })
+    }, [id, isEditing, state])
+
+    const handleCancel = () => {
+        navigate('/library')
     }
-    const handleOverlayClick = (event) => {
-        if (event.target === event.currentTarget) {
-            handleClose()
-        }
-    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -22,7 +32,6 @@ const BookForm = ({ selectedBook, onClose, onAdd, onEdit }) => {
             onEdit(form);
         else
             onAdd(form)
-        handleClose()
     };
 
     const handleInputChange = (event, attr) => {
@@ -41,12 +50,11 @@ const BookForm = ({ selectedBook, onClose, onAdd, onEdit }) => {
             }))
     }
 
-    const isEditing = !!selectedBook
-
-
     return (
-        <div className="book-form-overlay" onClick={handleOverlayClick}>
+        <div className="book-form-page">
             <form className="book-form" onSubmit={handleSubmit}>
+                <h1 className="book-form__heading">{isEditing ? 'Editar libro' : 'Agregar libro'}</h1>
+
                 <div className="book-form__field">
                     <label className="book-form__label" htmlFor="title">Título</label>
                     <input
@@ -121,8 +129,8 @@ const BookForm = ({ selectedBook, onClose, onAdd, onEdit }) => {
                         id="cover"
                         name="cover"
                         placeholder="https://..."
-                        value={form.imageUrl}
-                        onChange={(event) => handleInputChange(event, "imageUrl")} />
+                        value={form.cover ?? ''}
+                        onChange={(event) => handleInputChange(event, "cover")} />
                 </div>
 
                 <div className="book-form__field book-form__field--checkbox">
@@ -131,14 +139,14 @@ const BookForm = ({ selectedBook, onClose, onAdd, onEdit }) => {
                         type="checkbox"
                         id="isAvailable"
                         name="isAvailable"
-                        checked={form.available}
+                        checked={!!form.isAvailable}
                         onChange={(event) => handleCheckboxChange(event, "isAvailable")}
                     />
                     <label className="book-form__label" htmlFor="isAvailable">Disponible</label>
                 </div>
 
                 <div className="book-form__actions">
-                    <Button type="button" variant="secondary" size="md" onClick={handleClose}>Cancelar</Button>
+                    <Button type="button" variant="secondary" size="md" onClick={handleCancel}>Cancelar</Button>
                     <Button type="submit" variant="primary" size="md">{isEditing ? "Editar" : "Agregar"} libro</Button>
                 </div>
             </form>
