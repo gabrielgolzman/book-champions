@@ -1,13 +1,22 @@
+import { useState } from 'react'
 import StarIcon from '../shared/icons/starIcon/StarIcon'
 import Button from '../shared/button/Button'
+import ConfirmModal from '../confirmModal/ConfirmModal'
 import './BookItem.scss'
 
 const MAX_RATING = 5
 
 const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAvailable, onEdit, onDelete }) => {
 
+    const [confirmOpen, setConfirmOpen] = useState(false)
+
     const handleEditBook = () => {
-        onEdit({ _id: id, title, author, publisher, rating, pageCount, cover, isAvailable })
+        onEdit({ id, title, author, publisher, rating, pageCount, cover, isAvailable })
+    }
+
+    const handleConfirmDelete = () => {
+        setConfirmOpen(false)
+        onDelete(id)
     }
 
     const stars = Array.from({ length: MAX_RATING }, (_, i) => i < rating)
@@ -37,8 +46,10 @@ const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAv
                         </span>
                     ))}
                 </div>
-                <Button variant='danger' onClick={() => onDelete(id)}>Eliminar libro</Button>
-                <Button onClick={handleEditBook}>Editar libro</Button>
+                <div className="book-card__buttons">
+                    <Button variant='danger' onClick={() => setConfirmOpen(true)}>Eliminar libro</Button>
+                    <Button onClick={handleEditBook}>Editar libro</Button>
+                </div>
 
                 <div className="book-card__footer">
                     <span className="book-card__pages">{pageCount} pág.</span>
@@ -47,6 +58,15 @@ const BookItem = ({ id, title, author, publisher, rating, pageCount, cover, isAv
                     </span>
                 </div>
             </div>
+
+            <ConfirmModal
+                open={confirmOpen}
+                title="Eliminar libro"
+                message={`¿Estás seguro de que querés eliminar "${title}"? Esta acción no se puede deshacer.`}
+                confirmLabel="Eliminar"
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setConfirmOpen(false)}
+            />
         </article>
     )
 }

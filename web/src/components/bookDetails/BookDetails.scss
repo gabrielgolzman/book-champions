@@ -1,0 +1,49 @@
+.book-details {
+  display: flex;
+  gap: 32px;
+  padding: 48px;
+  max-width: 900px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  &__cover {
+    width: 220px;
+    height: auto;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  &__author {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  &__rating {
+    color: var(--gold);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__status {
+    padding: 48px;
+    color: var(--text-secondary);
+  }
+}
