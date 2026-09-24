@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import Button from '../shared/button/Button'
 import { initialLoginData, initialLoginErrors } from './Login.data'
 import { MIN_PASSWORD_LENGTH } from './Login.const'
 import './Login.scss'
+import Button from '../../shared/button/Button'
 
 
 const Login = ({ onSignIn }) => {
@@ -30,9 +30,9 @@ const Login = ({ onSignIn }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const isPasswordInvalid = passwordRef.current.value.length < MIN_PASSWORD_LENGTH;
+    const isPasswordInvalid = !form.password || form.password < MIN_PASSWORD_LENGTH;
 
-    if (!emailRef.current.value.length) {
+    if (!form.email) {
       setErrors((prevErrors) => ({ ...prevErrors, email: true }))
       emailRef.current.focus();
       return;
