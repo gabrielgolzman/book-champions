@@ -1,61 +1,55 @@
 import { validate as isValidUUID } from 'uuid';
 import { Repository } from "../shared/base.repository.js";
 import { Author } from "./author.entity.js";
-import { pool } from "../shared/db/conn.postgre.js";
+import { orm } from "../shared/db/orm.js";
 
 export class AuthorRepository implements Repository<Author> {
 
     public async findAll(): Promise<Author[] | undefined> {
-        const result = await pool.query('select id, name from authors');
-        return result.rows;
+        const em = orm.em.fork();
+        return em.find(Author, {});
     }
 
     public async findOne(item: { id: string; }): Promise<Author | undefined> {
         if (!isValidUUID(item.id))
             return undefined;
 
-        const result = (await pool.query(
-            'select id, name from authors where id = $1',
-            [item.id]
-        )).rows[0];
-
-        if (!result)
-            return undefined;
-
-        return result;
+        const em = orm.em.fork();
+        return await em.findOne(Author, { id: item.id }) || undefined;
     }
 
     public async add(item: Author): Promise<Author | undefined> {
-        const result = (await pool.query(
-            'insert into authors (name) values ($1) returning id, name',
-            [item.name]
-        )).rows[0];
+        const em = orm.em.fork();
+        const author = new Author(item.name);
 
-        return result;
+        await em.persistAndFlush(author);
+        return author;
     }
 
     public async update(item: Author): Promise<Author | undefined> {
         if (!item.id || !isValidUUID(item.id))
             return undefined;
 
-        const result = (await pool.query(
-            'update authors set name = $1 where id = $2 returning id, name',
-            [item.name, item.id]
-        )).rows[0];
+        const em = orm.em.fork();
+        const author = await em.findOne(Author, { id: item.id });
+        if (!author)
+            return undefined;
 
-        return result;
+        author.name = item.name;
+        await em.flush();
+        return author;
     }
 
     public async delete(item: { id: string; }): Promise<{ id: string } | undefined> {
         if (!isValidUUID(item.id))
             return undefined;
 
-        const result = (await pool.query(
-            'delete from authors where id = $1 returning id',
-            [item.id]
-        )).rows[0];
+        const em = orm.em.fork();
+        const affected = await em.nativeDelete(Author, { id: item.id });
+        if (!affected)
+            return undefined;
 
-        return result;
+        return { id: item.id };
     }
 
 }
