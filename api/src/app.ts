@@ -1,7 +1,9 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { bookRouter } from "./book/book.routes.js";
 import { authorRouter } from "./author/author.routes.js";
+import { userRouter } from "./user/user.routes.js";
 
 const app = express();
 
@@ -16,6 +18,7 @@ app.use(cors({
 
 app.use("/api/books", bookRouter)
 app.use("/api/authors", authorRouter)
+app.use("/api/auth", userRouter)
 
 app.use((_, res) => {
     return res.status(404).send({ message: "Resource not found" });

@@ -25,6 +25,13 @@ create table if not exists book_authors (
   primary key (book_id, author_id)
 );
 
+create table if not exists users (
+  id uuid primary key default gen_random_uuid(),
+  name text,
+  email text not null unique,
+  password text not null
+);
+
 -- insert data
 insert into authors (name) values ('J.R.R. Tolkien');
 insert into authors (name) values ('J.K. Rowling');
